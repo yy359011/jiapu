@@ -1,0 +1,6 @@
+{
+  "name": "家谱档案馆",
+  "description": "寻根问祖 · 续脉传家 —— 数字化呈现家族迁徙史、功德录与世系脉络的家谱文献平台。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

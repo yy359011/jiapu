@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+/* 传统古典档案宣纸与云纹底纹（用于网页整体底色） */
+.bg-archive-pulp {
+  background-color: #fdfbf7;
+  background-image: 
+    /* 宣纸纤维肌理 noise */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='paper-noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper-noise)'/%3E%3C/svg%3E"),
+    /* 汉代传统八宝/古钱互锁云纹 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%238b3e1f' stroke-opacity='0.02' stroke-width='1'%3E%3Ccircle cx='60' cy='60' r='60'/%3E%3Ccircle cx='0' cy='60' r='60'/%3E%3Ccircle cx='120' cy='60' r='60'/%3E%3Ccircle cx='60' cy='0' r='60'/%3E%3Ccircle cx='60' cy='120' r='60'/%3E%3Cpath d='M30 30h60v60H30z' stroke-width='0.5' stroke-dasharray='2 2'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-blend-mode: multiply;
+}
+
+/* 首页姓氏卡片精细中式回纹与印泥底纹 */
+.bg-card-traditional {
+  background-color: #ffffff;
+  background-image: 
+    /* 纸页麻点质感 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.15' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    /* 传统回字纹边饰 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M0 0h10v10H0V0zm10 10h10v10H10V10zm20 20h10v10H30V30zm-10-10h10v10H20V20z' fill='none' stroke='%238b3e1f' stroke-opacity='0.015' stroke-width='0.8'/%3E%3C/svg%3E");
+}
+
+/* 选中的卡片采用更加华丽的红色印红/锦缎暗纹 */
+.bg-card-selected-traditional {
+  background-color: #faf4e9;
+  background-image: 
+    /* 细腻宣纸 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.12' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    /* 典型吉祥连绵海浪水纹（代表源远流长、子孙连绵） */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='30' viewBox='0 0 60 30'%3E%3Cpath d='M0 30A30 30 0 0 1 30 0a30 30 0 0 1 30 30M0 30a24 24 0 0 1 24-24 24 24 0 0 1 24 24M0 30a18 18 0 0 1 18-18 18 18 0 0 1 18 18M0 30a12 12 0 0 1 12-12 12 12 0 0 1 12 12M0 30a6 6 0 0 1 6-6 6 6 0 0 1 6 6' fill='none' stroke='%238b3e1f' stroke-opacity='0.035' stroke-width='1.2'/%3E%3C/svg%3E");
+}
+
+/* 巨幅高光卡片专属精印锦纹底纹 */
+.bg-highlight-traditional {
+  background-color: #ffffff;
+  background-image: 
+    /* 纸张微粒 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.08' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.042 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E"),
+    /* 中式雅致团寿或冰裂窗格水印 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%238b3e1f' stroke-opacity='0.02' stroke-width='0.8'%3E%3Cpath d='M0 0h100v100H0V0zm50 0v100M0 50h100M25 0v100M75 0v100M0 25h100M0 75h100'/%3E%3Ccircle cx='50' cy='50' r='15'/%3E%3Ccircle cx='50' cy='50' r='30'/%3E%3Ccircle cx='50' cy='50' r='45'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* 带有典雅古风的页面过渡动效 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
