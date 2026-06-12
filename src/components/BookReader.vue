@@ -14,33 +14,12 @@ const showToc = ref(false);
 const isPlaying = ref(false);
 const isFullScreen = ref(false);
 
-const activeSidebarTab = ref<'toc' | 'volumes'>('toc');
-
-// Combined state: is the sidebar open?
-const isSidebarOpen = computed(() => {
-  return showToc.value || showVolumes.value;
-});
-
 const toggleToc = () => {
-  if (showToc.value) {
-    showToc.value = false;
-    showVolumes.value = false;
-  } else {
-    showToc.value = true;
-    showVolumes.value = false;
-    activeSidebarTab.value = 'toc';
-  }
+  showToc.value = !showToc.value;
 };
 
 const toggleVolumes = () => {
-  if (showVolumes.value) {
-    showToc.value = false;
-    showVolumes.value = false;
-  } else {
-    showVolumes.value = true;
-    showToc.value = false;
-    activeSidebarTab.value = 'volumes';
-  }
+  showVolumes.value = !showVolumes.value;
 };
 
 const zoomScale = ref(1);
@@ -67,18 +46,85 @@ const volumesList = [
   { no: 4, title: '第四册 (卷四 · 世系功德志)', desc: '列历世始祖昭穆行状，及续谱祠庙功德。' }
 ];
 
-// Table of Contents (目录) list
-const tocList = computed(() => {
-  const s = props.book.surname;
-  const v = volumesList[currentVolume.value - 1].title.split(' · ')[1]?.replace(')', '') || '谱序';
+// Multi-level Table of Contents (目录) data structure
+interface TocNode {
+  id: string;
+  label: string;
+  desc?: string;
+  sheet?: number;       // only leaf nodes navigate to a sheet
+  volumeNo?: number;    // volume-level nodes switch volume
+  children?: TocNode[];
+}
+
+const tocTree = computed<TocNode[]>(() => {
+  const vi = currentVolume.value - 1;
+  const vName = ['谱序源流', '迁徙图考', '家规家训', '世系功德志'][vi];
+  const sectionNames = [
+    ['序言源流', '族史考证'],
+    ['迁徙图考', '居地述略'],
+    ['家规家训', '处世箴言'],
+    ['世系昭穆', '功德名册']
+  ][vi];
   return [
-    { sheet: 0, label: '一、古籍封面', desc: '古籍题签 · 封面', leaf: '封面' },
-    { sheet: 1, label: `二、${v}·首叶`, desc: '影印大宗序跋', leaf: '第一叶' },
-    { sheet: 2, label: `三、${v}·次叶`, desc: '考证祠庙遗风', leaf: '第二叶' },
-    { sheet: 3, label: `四、${v}·终叶`, desc: '跋跋功贤功德', leaf: '第三叶' },
-    { sheet: 4, label: '五、古籍封底', desc: '古籍装帧 · 封底', leaf: '封底' }
+    {
+      id: `vol-${vi}-cover`,
+      label: '古籍封面',
+      desc: '古籍题签 · 封面',
+      sheet: 0,
+      volumeNo: vi + 1
+    },
+    {
+      id: `vol-${vi}-body`,
+      label: `正文 · ${vName}`,
+      desc: sectionNames.join(' / '),
+      children: [
+        {
+          id: `vol-${vi}-p1`,
+          label: `首叶 · ${sectionNames[0]}`,
+          desc: '影印大宗序跋',
+          sheet: 1,
+          volumeNo: vi + 1
+        },
+        {
+          id: `vol-${vi}-p2`,
+          label: `次叶 · ${sectionNames[1]}`,
+          desc: '考证祠庙遗风',
+          sheet: 2,
+          volumeNo: vi + 1
+        },
+        {
+          id: `vol-${vi}-p3`,
+          label: '终叶 · 跋文功德',
+          desc: '跋跋功贤功德',
+          sheet: 3,
+          volumeNo: vi + 1
+        }
+      ]
+    },
+    {
+      id: `vol-${vi}-back`,
+      label: '古籍封底',
+      desc: '古籍装帧 · 封底',
+      sheet: 4,
+      volumeNo: vi + 1
+    }
   ];
 });
+
+// Track which TOC tree nodes are expanded
+const expandedTocNodes = ref<Set<string>>(new Set(['vol-0-body']));
+const toggleTocNode = (id: string) => {
+  const s = new Set(expandedTocNodes.value);
+  if (s.has(id)) s.delete(id); else s.add(id);
+  expandedTocNodes.value = s;
+};
+const isTocExpanded = (id: string) => expandedTocNodes.value.has(id);
+
+// Navigate to a leaf node
+const navigateToTocLeaf = (node: TocNode) => {
+  if (node.sheet === undefined) return;
+  activeSheet.value = node.sheet;
+};
 
 // Autoplay Slideshow logic
 let playTimer: ReturnType<typeof setInterval> | null = null;
@@ -136,7 +182,10 @@ const selectVolume = (volNo: number) => {
   isVolumeLoading.value = true;
   currentVolume.value = volNo;
   activeSheet.value = 0; // Reset to cover
-  
+  // Auto-expand the body section for the new volume
+  const vi = volNo - 1;
+  expandedTocNodes.value = new Set([`vol-${vi}-body`]);
+
   setTimeout(() => {
     isVolumeLoading.value = false;
   }, 600);
@@ -449,7 +498,7 @@ const thumbnailsList = computed(() => {
       <div class="absolute top-0.5 left-0.5 w-2 h-2 border-t border-l border-[#8B3E1F]/50 pointer-events-none" />
       <div class="absolute top-0.5 right-0.5 w-2 h-2 border-t border-r border-[#8B3E1F]/50 pointer-events-none" />
       <div class="absolute bottom-0.5 left-0.5 w-2 h-2 border-b border-l border-[#8B3E1F]/50 pointer-events-none" />
-      <div class="absolute bottom-0.5 right-0.5 w-2 h-2 border-b border-r border-[#8B3E1F]/50 pointer-events-none" />Base
+      <div class="absolute bottom-0.5 right-0.5 w-2 h-2 border-b border-r border-[#8B3E1F]/50 pointer-events-none" />
 
       <!-- Row 1: Flip & Scale (Requested at top) -->
       <div class="flex flex-wrap items-center justify-between gap-3 w-full pb-3 border-b border-[#EAE3D2]">
@@ -611,9 +660,11 @@ const thumbnailsList = computed(() => {
     <!-- Core Interactive Area Grid Layout -->
     <div class="flex flex-col lg:flex-row items-stretch justify-center w-full gap-4 max-w-[1240px] relative z-10">
       
-      <!-- ==================== UNIFIED COLLAPSIBLE SIDEBAR: Table of Contents & Volumes Selection ==================== -->
+      <!-- ==================== INDEPENDENT SIDEBAR PANELS: TOC & Volumes ==================== -->
+
+      <!-- Panel 1: Table of Contents (目录) -->
       <div 
-        v-if="isSidebarOpen" 
+        v-if="showToc" 
         class="w-full lg:w-[260px] bg-[#FAF4E8] border border-[#8B3E1F]/20 rounded-xl p-4 flex flex-col shrink-0 shadow-md transition-all animate-fade-in relative"
       >
         <!-- Corner Decorative Accents -->
@@ -622,38 +673,76 @@ const thumbnailsList = computed(() => {
         <div class="absolute bottom-1 left-1 w-1.5 h-1.5 border-b border-l border-[#8B3E1F]/35 pointer-events-none" />
         <div class="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-[#8B3E1F]/35 pointer-events-none" />
 
-        <!-- Active Panel Header -->
         <div class="font-serif text-sm font-bold text-[#8B3E1F] border-b border-[#EBE2D0]/60 pb-2 mb-4 tracking-wider text-center">
-          {{ activeSidebarTab === 'toc' ? '📖 典籍目录' : '📚 卷帙选册' }}
+          {{ volumesList[currentVolume - 1].title.split(' (')[0] }} · 目录
         </div>
 
-        <!-- TAB CONTENT: TOC INDEX -->
-        <div v-if="activeSidebarTab === 'toc'" class="flex flex-col flex-1 gap-2.5">
-          <ul class="flex flex-col gap-2">
-            <li 
-              v-for="item in tocList" 
-              :key="item.sheet"
-              @click="activeSheet = item.sheet"
+        <!-- TOC TREE (filtered by current volume) -->
+        <div class="flex flex-col flex-1 gap-1 overflow-y-auto max-h-[calc(100vh-220px)] pr-1 toc-scroll">
+          <template v-for="node in tocTree" :key="node.id">
+            <!-- Branch node (has children) -->
+            <div v-if="node.children">
+              <div
+                @click="toggleTocNode(node.id)"
+                class="cursor-pointer px-2 py-1.5 rounded-lg border transition-all duration-200 select-none flex items-center gap-1.5 bg-[#8B3E1F]/8 border-[#8B3E1F]/40 text-[#8B3E1F]"
+              >
+                <span class="text-[10px] transition-transform duration-200" :class="{ 'rotate-90': isTocExpanded(node.id) }">▶</span>
+                <span class="text-[11px] font-serif font-extrabold tracking-wide flex-1">{{ node.label }}</span>
+              </div>
+              <!-- Leaf pages -->
+              <div v-if="isTocExpanded(node.id)" class="ml-2 flex flex-col gap-0.5 border-l border-[#D9CFBF] pl-1.5">
+                <div
+                  v-for="leaf in node.children"
+                  :key="leaf.id"
+                  @click="navigateToTocLeaf(leaf)"
+                  :class="[
+                    'cursor-pointer px-1.5 py-1 rounded-md transition-all duration-200 select-none flex items-center justify-between',
+                    activeSheet === leaf.sheet
+                      ? 'bg-[#8B3E1F]/10 text-[#8B3E1F] font-bold'
+                      : 'hover:bg-[#F2ECE0]/80 text-[#7A6B5B]'
+                  ]"
+                >
+                  <span class="text-[10.5px] font-serif tracking-wide">{{ leaf.label }}</span>
+                  <span v-if="activeSheet === leaf.sheet" class="text-[8px] text-[#8B3E1F]">●</span>
+                </div>
+              </div>
+            </div>
+            <!-- Leaf node (cover, back) -->
+            <div
+              v-else
+              @click="navigateToTocLeaf(node)"
               :class="[
-                'cursor-pointer p-2 rounded-lg border transition-all duration-300 select-none flex flex-col',
-                activeSheet === item.sheet
-                  ? 'bg-[#8B3E1F]/10 border border-[#8B3E1F] text-[#8B3E1F] shadow-sm'
-                  : 'bg-[#FFFDF9]/90 border border-[#DECFBD]/85 hover:bg-[#F2ECE0] text-[#705D4D]'
+                'cursor-pointer px-2 py-1.5 rounded-lg border transition-all duration-200 select-none flex items-center justify-between',
+                activeSheet === node.sheet
+                  ? 'bg-[#8B3E1F]/10 border-[#8B3E1F]/40 text-[#8B3E1F] font-bold'
+                  : 'bg-[#FFFDF9]/60 border-[#E8DFD0]/70 hover:bg-[#F2ECE0] text-[#705D4D]'
               ]"
             >
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-serif font-bold tracking-wide">{{ item.label }}</span>
-                <span v-if="activeSheet === item.sheet" class="text-[9.5px] text-[#8B3E1F] font-serif font-bold">● 当前卷</span>
-              </div>
-              <span class="text-[10px] opacity-75 font-sans mt-0.5 leading-normal text-stone-500">{{ item.desc }}</span>
-            </li>
-          </ul>
-
-          <!-- Removed bottom guidance box -->
+              <span class="text-[11px] font-serif tracking-wide">{{ node.label }}</span>
+              <span v-if="activeSheet === node.sheet" class="text-[8px] text-[#8B3E1F]">●</span>
+            </div>
+          </template>
         </div>
 
-        <!-- TAB CONTENT: VOLUME LIST -->
-        <div v-if="activeSidebarTab === 'volumes'" class="flex flex-col flex-1 gap-2.5">
+      </div>
+
+      <!-- Panel 2: Volumes (册次) -->
+      <div 
+        v-if="showVolumes" 
+        class="w-full lg:w-[260px] bg-[#FAF4E8] border border-[#8B3E1F]/20 rounded-xl p-4 flex flex-col shrink-0 shadow-md transition-all animate-fade-in relative"
+      >
+        <!-- Corner Decorative Accents -->
+        <div class="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-[#8B3E1F]/35 pointer-events-none" />
+        <div class="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-[#8B3E1F]/35 pointer-events-none" />
+        <div class="absolute bottom-1 left-1 w-1.5 h-1.5 border-b border-l border-[#8B3E1F]/35 pointer-events-none" />
+        <div class="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-[#8B3E1F]/35 pointer-events-none" />
+
+        <div class="font-serif text-sm font-bold text-[#8B3E1F] border-b border-[#EBE2D0]/60 pb-2 mb-4 tracking-wider text-center">
+          卷帙选册
+        </div>
+
+        <!-- VOLUME LIST -->
+        <div class="flex flex-col flex-1 gap-2.5 overflow-y-auto max-h-[calc(100vh-220px)] pr-1 toc-scroll">
           <div class="flex flex-col gap-2 rounded-lg">
             <div 
               v-for="vol in volumesList"
@@ -688,8 +777,6 @@ const thumbnailsList = computed(() => {
               </p>
             </div>
           </div>
-
-          <!-- Removed bottom volume explanation box -->
         </div>
 
       </div>
@@ -1118,67 +1205,10 @@ const thumbnailsList = computed(() => {
         </div>
 
 
-      </div>              
+      </div>
 
 
               <!-- Spine bound overlay (string thread simulation) -->
-      <!-- ==================== RIGHT COLLAPSIBLE PANEL: Volumes Selection ==================== -->
-      <div 
-        v-if="showVolumes" 
-        class="w-full lg:w-[220px] bg-[#FAF4E8] border border-[#8B3E1F]/20 rounded-xl p-4 flex flex-col shrink-0 shadow-sm transition-all animate-fade-in relative"
-      >
-        <!-- Corner Decorative Accents -->
-        <div class="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-[#8B3E1F]/35 pointer-events-none" />
-        <div class="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-[#8B3E1F]/35 pointer-events-none" />
-        <div class="absolute bottom-1 left-1 w-1.5 h-1.5 border-b border-l border-[#8B3E1F]/35 pointer-events-none" />
-        <div class="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-[#8B3E1F]/35 pointer-events-none" />
-
-        <div class="border-b border-[#DECEBE]/60 pb-2 mb-3">
-          <h3 class="font-serif font-extrabold text-[#8B3E1F] text-sm tracking-widest flex items-center justify-center gap-1.5">
-            <span>📚</span> 册次卷帙检索
-          </h3>
-          <span class="text-[9px] text-[#A29884] uppercase font-mono block mt-1 text-center">VOLUME SELECTION SEALS</span>
-        </div>
-
-        <div class="flex flex-col gap-2 rounded-lg">
-          <div 
-            v-for="vol in volumesList"
-            :key="vol.no"
-            @click="selectVolume(vol.no)"
-            :class="[
-              'cursor-pointer p-2 rounded-lg border transition-all duration-200 flex flex-col relative overflow-hidden',
-              currentVolume === vol.no
-                ? 'bg-[#8B3E1F] text-[#FFFDF4] border border-[#8B3E1F]'
-                : 'bg-[#FFFDF9]/90 border border-[#DECFBD]/85 text-[#5C5045] hover:bg-[#F2ECE0]'
-            ]"
-          >
-            <!-- Sealed visual indicator -->
-            <div 
-              v-if="currentVolume === vol.no" 
-              class="absolute -right-3 -bottom-3 bg-white/10 text-[#FFFDF4] rounded-full p-4 font-serif text-[20px] tracking-tighter opacity-15 rotate-12 font-extrabold"
-            >
-              契
-            </div>
-
-            <span class="text-xs font-serif font-extrabold flex items-center gap-1">
-              <span class="text-[10px] opacity-75">#{{ vol.no }}</span>
-              <span>{{ vol.title }}</span>
-            </span>
-            <p 
-              :class="[
-                'text-[9.5px] mt-1 font-sans leading-relaxed',
-                currentVolume === vol.no ? 'text-[#FFFDF4]/90' : 'text-stone-500'
-              ]"
-            >
-              {{ vol.desc }}
-            </p>
-          </div>
-        </div>
-
-        <div class="mt-4 bg-[#F2EDE1] p-3 rounded-lg border border-[#E3D9C9] text-[10px] text-[#8C7A65] font-serif leading-relaxed">
-          <strong>分册典录</strong>：全谱修撰共四册八卷。选择不同的册次，即可将高精藏品影印页卷加载到中央阅读案台。
-        </div>
-      </div>
 
     </div>
 
@@ -1356,6 +1386,17 @@ const thumbnailsList = computed(() => {
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background-color: rgba(139, 62, 31, 0.2);
   border-radius: 9px;
+}
+
+.toc-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+.toc-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(139, 62, 31, 0.15);
+  border-radius: 9px;
+}
+.toc-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* Animations */

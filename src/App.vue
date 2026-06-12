@@ -551,6 +551,12 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
                     class="!bg-[#8B3E1F] !border-[#8B3E1F] hover:!bg-[#732F15] !text-white !font-bold !px-6 !py-5.5 !rounded-lg !text-[14px] flex items-center gap-2 shadow-xs transition"
                     id="find-clan-button"
                   >
+                    阅读宗谱
+                    <el-icon><ArrowRight /></el-icon>
+                  </el-button>
+                  <el-button 
+                    class="!bg-white !border-[#8B3E1F]/30 hover:!bg-[#F5EFE2] !text-[#8B3E1F] !font-bold !px-6 !py-5.5 !rounded-lg !text-[14px] flex items-center gap-2 shadow-xs transition"
+                  >
                     查询世系表
                     <el-icon><ArrowRight /></el-icon>
                   </el-button>
@@ -884,13 +890,26 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
     <!-- ==================== DIALOG 1: DIGITIZED READER (HIGH FIDELITY OPTION) ==================== -->
     <el-dialog
       v-model="viewerVisible"
-      :title="activeBook?.title"
       width="95%"
       max-width="1120px"
       destroy-on-close
       align-center
       class="custom-reader-dialog !bg-[#FAF3E8] !rounded-xl shadow-2xl border-2 border-[#8B3E1F]/30"
     >
+      <template #header>
+        <div class="flex items-center justify-between w-full pr-8">
+          <h3 class="text-base font-serif font-bold text-[#432313] tracking-wide">{{ activeBook?.title }}</h3>
+          <button
+            @click="viewerVisible = false"
+            class="px-3 py-1 rounded-lg border border-[#8B3E1F]/25 bg-[#FFFDF9] text-[#8B3E1F] text-xs font-serif font-semibold hover:bg-[#F5EFE2] transition flex items-center gap-1 shadow-xs"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            返回
+          </button>
+        </div>
+      </template>
       <div class="flex flex-col gap-4">
         
         <!-- Dynamic Content Display: Interactive 3D Book Page Flipping -->
@@ -1042,25 +1061,6 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
   margin-right: 0 !important;
   padding-bottom: 16px;
   position: relative;
-}
-
-.custom-reader-dialog .el-dialog__header::before {
-  content: "印";
-  position: absolute;
-  left: 12px;
-  top: -6px;
-  font-family: 'Noto Serif SC', serif;
-  font-size: 9px;
-  font-weight: 900;
-  color: #FFFDF9;
-  background-color: #8B3E1F;
-  border-radius: 4px;
-  width: 14px;
-  height: 14px;
-  line-height: 14px;
-  text-align: center;
-  box-shadow: 0 1px 3px rgba(139, 62, 31, 0.3);
-  transform: rotate(-5deg);
 }
 
 .lineage-map-dialog .el-dialog__header {
