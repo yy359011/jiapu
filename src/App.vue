@@ -238,6 +238,39 @@ const getSurnameKinds = (surname: Surname) => {
   return count > 0 ? count : 1;
 };
 
+const getSurnameCategoryCounts = (surname: Surname) => {
+  const books = BOOKS.filter(b => b.surname === surname.name);
+  const genealogyBooks = books.filter(b => /宗谱|家谱|族谱|世谱|家乘|义门/.test(b.title));
+  const villageBooks = books.filter(b => /村志|村落|村/.test(b.title));
+  const ancientBooks = books.filter(b => /博古|图书集成|古籍/.test(b.title));
+  
+  const sumVols = (arr: typeof books) => arr.reduce((sum, b) => {
+    const num = parseInt(b.volumes) || 1;
+    return sum + num;
+  }, 0);
+  
+  return [
+    { key: 'genealogy', label: '家谱', count: genealogyBooks.length, volumes: sumVols(genealogyBooks), icon: '📜' },
+    { key: 'village', label: '村志', count: villageBooks.length, volumes: sumVols(villageBooks), icon: '🏘' },
+    { key: 'ancient', label: '古籍', count: ancientBooks.length, volumes: sumVols(ancientBooks), icon: '📖' }
+  ];
+};
+
+const navigateToBrowseByCategory = (surnameName: string, category: string) => {
+  activeSurnameSearch.value = surnameName;
+  const books = BOOKS.filter(b => b.surname === surnameName);
+  let filtered = [];
+  if (category === 'genealogy') filtered = books.filter(b => /宗谱|家谱|族谱|世谱|家乘|义门/.test(b.title));
+  else if (category === 'village') filtered = books.filter(b => /村志|村落|村/.test(b.title));
+  else if (category === 'ancient') filtered = books.filter(b => /博古|图书集成|古籍/.test(b.title));
+  
+  const targetBook = filtered[0] || books[0];
+  if (targetBook) {
+    activeBookId.value = targetBook.id;
+  }
+  currentTab.value = 'browse';
+};
+
 const TONE_PINYIN_MAP: Record<string, string> = {
   "陈": "chén",
   "张": "zhāng",
@@ -502,7 +535,7 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
             
             <!-- Highlight Main Card (Left Column) -->
             <div class="lg:col-span-7" id="highlight-surname-card">
-              <div class="relative bg-highlight-traditional border border-[#E0D9CE] rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-300 min-h-[420px] flex flex-col justify-between overflow-hidden">
+              <div class="relative bg-highlight-traditional border border-[#E0D9CE] rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
                 <!-- Background stamp watermark (1:1 visual style tag stamp) -->
                 <div class="absolute bottom-6 right-6 opacity-8 pointer-events-none w-52 h-52 text-[#8B3E1F]/10">
                   <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">
@@ -512,7 +545,7 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
 
                 <!-- Card Content -->
                 <div>
-                  <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center justify-between mb-5">
                     <h2 class="text-3xl font-bold text-[#5C2E16] font-serif">
                       {{ selectedSurname.fullName }}
                     </h2>
@@ -521,11 +554,24 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
                     </span>
                   </div>
 
-                  <p class="text-[15px] leading-relaxed text-[#5C5045] mb-8 max-w-xl font-normal">
-                    {{ selectedSurname.desc }}
-                  </p>
+                  <!-- Category Tags: 家谱 / 村志 / 古籍 -->
+                  <div class="flex items-center gap-3 mb-5 flex-wrap">
+                    <template v-for="cat in getSurnameCategoryCounts(selectedSurname)" :key="cat.key">
+                      <div 
+                        class="group flex items-center gap-2 px-3 py-2 rounded-full bg-white/60 border border-[#E0D9CE] text-[#3B3026] text-xs font-medium shadow-sm cursor-pointer hover:bg-[#8B3E1F]/5 hover:border-[#8B3E1F]/40 hover:shadow-md transition-all duration-200"
+                        @click="navigateToBrowseByCategory(selectedSurname.name, cat.key)"
+                      >
+                        <span class="text-sm">{{ cat.icon }}</span>
+                        <span class="font-semibold">{{ cat.label }}</span>
+                        <span class="flex items-center gap-1.5">
+                          <span class="px-1.5 py-0.5 rounded bg-[#8B3E1F]/10 text-[#8B3E1F] font-bold font-mono text-[11px]">{{ cat.count }}种</span>
+                          <span class="px-1.5 py-0.5 rounded bg-[#3B3026]/10 text-[#3B3026] font-bold font-mono text-[11px]">{{ cat.volumes }}册</span>
+                        </span>
+                      </div>
+                    </template>
+                  </div>
 
-                  <div class="grid grid-cols-2 gap-6 border-t border-[#F2EDE6] pt-6 mr-10">
+                  <div class="grid grid-cols-2 gap-6 border-t border-[#F2EDE6] pt-5 mr-10">
                     <div>
                       <span class="text-xs text-[#8A7E72] block uppercase tracking-wider mb-1">
                         收藏册数
@@ -545,7 +591,7 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
                   </div>
                 </div>
 
-                <div class="pt-8 flex items-center gap-4">
+                <div class="pt-6 flex items-center gap-4">
                   <el-button 
                     @click="navigateToBrowse(selectedSurname.name)"
                     class="!bg-[#8B3E1F] !border-[#8B3E1F] hover:!bg-[#732F15] !text-white !font-bold !px-6 !py-5.5 !rounded-lg !text-[14px] flex items-center gap-2 shadow-xs transition"
@@ -612,7 +658,7 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
                     {{ getSurnameKinds(surname) }} 种
                   </span>
                   <span class="text-[10px] text-[#8A7E72] font-mono mt-0.5 block truncate">
-                    {{ surname.population }}
+                    {{ surname.volCount }}
                   </span>
                 </div>
               </div>
@@ -815,38 +861,48 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
                   </el-button>
                 </div>
 
-                <!-- Right Metadata parameters table (1:1 matching Image 2) -->
+                <!-- Right Metadata parameters table -->
                 <div class="md:col-span-7 flex flex-col gap-4">
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 text-[14px]">
                     
                     <!-- Left Column -->
                     <div class="flex flex-col gap-4">
                       <div>
-                        <span class="text-[#8A7E72] block font-medium mb-1">居地</span>
-                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.location }}</strong>
-                      </div>
-
-                      <div>
                         <span class="text-[#8A7E72] block font-medium mb-1">责任者</span>
                         <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.compiler }}</strong>
                       </div>
 
                       <div>
-                        <span class="text-[#8A7E72] block font-medium mb-1">撰修时间</span>
+                        <span class="text-[#8A7E72] block font-medium mb-1">捐赠者</span>
+                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.donor }}</strong>
+                      </div>
+
+                      <div>
+                        <span class="text-[#8A7E72] block font-medium mb-1">涵盖范围</span>
+                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.coverage }}</strong>
+                      </div>
+
+                      <div>
+                        <span class="text-[#8A7E72] block font-medium mb-1">时间</span>
                         <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.time }}</strong>
+                      </div>
+
+                      <div>
+                        <span class="text-[#8A7E72] block font-medium mb-1">馆藏地</span>
+                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.library }}</strong>
                       </div>
                     </div>
 
                     <!-- Right Column -->
                     <div class="flex flex-col gap-4">
                       <div>
-                        <span class="text-[#8A7E72] block font-medium mb-1">装订样式</span>
-                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.format }}</strong>
+                        <span class="text-[#8A7E72] block font-medium mb-1">收录册数</span>
+                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.volumes }}</strong>
                       </div>
 
                       <div>
-                        <span class="text-[#8A7E72] block font-medium mb-1">馆藏信息</span>
-                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.library }}</strong>
+                        <span class="text-[#8A7E72] block font-medium mb-1">始祖</span>
+                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.ancestor }}</strong>
                       </div>
 
                       <div class="mt-1">
@@ -855,28 +911,26 @@ const getPinyinWithTone = (name: string, defaultPinyin: string) => {
                           {{ activeBook.serialNo }}
                         </span>
                       </div>
+
+                      <div>
+                        <span class="text-[#8A7E72] block font-medium mb-1">收藏史</span>
+                        <strong class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.history }}</strong>
+                      </div>
+
+                      <div class="flex items-start gap-2">
+                        <span class="text-[#8A7E72] block font-medium mb-1 shrink-0 w-12">家徽</span>
+                        <div class="flex items-center gap-2">
+                          <span v-if="activeBook.badge" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#8B3E1F] text-[#FFFDF4] font-serif font-bold text-sm border-2 border-[#B8633F] shadow-sm">
+                            {{ activeBook.badge.charAt(0) }}
+                          </span>
+                          <span class="text-[#3B3026] text-[15px] font-semibold">{{ activeBook.badge || '—' }}</span>
+                        </div>
+                      </div>
                     </div>
 
                   </div>
                 </div>
 
-              </div>
-
-              <!-- Content Abstract block matching Image 2 perfectly -->
-              <div class="relative bg-[#FAFAF7] border border-[#EBE6DC] rounded-xl p-6 overflow-hidden mr-2">
-                <!-- Large Quote stamp sign -->
-                <span class="absolute top-1 left-2 text-[100px] text-[#8B3E1F]/5 font-serif select-none pointer-events-none transform -translate-y-8">
-                  “
-                </span>
-                
-                <div class="relative flex items-center gap-1.5 text-xs font-bold text-[#8B3E1F] tracking-wider mb-3">
-                  <el-icon class="text-sm"><Document /></el-icon>
-                  <span>摘要</span>
-                </div>
-
-                <p class="relative text-[14px] leading-relaxed text-[#5C5045] font-normal tracking-wide whitespace-pre-line">
-                  {{ activeBook.abstract }}
-                </p>
               </div>
 
             </div>

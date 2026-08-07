@@ -1,6 +1,6 @@
 export interface Surname {
   name: string;      // "陈", "张", "赵"
-  fullName: string;  // "陈氏", "張 [张]"
+  fullName: string;  // "陈氏", "张(張)"
   pinyin: string;
   charBadge: string; // "陈", "张"
   key: string;       // Index letter "C", "Z", etc.
@@ -25,12 +25,17 @@ export interface Book {
   serialNo: string;
   abstract: string;
   pages: string[];
+  donor: string;
+  coverage: string;
+  ancestor: string;
+  history: string;
+  badge: string;
 }
 
 export const SURNAMES: Surname[] = [
   {
     name: "陈",
-    fullName: "陈[陳]",
+    fullName: "陈(陳)",
     pinyin: "chen",
     charBadge: "陈",
     key: "C",
@@ -42,7 +47,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "张",
-    fullName: "張 [张]",
+    fullName: "张(張)",
     pinyin: "zhang",
     charBadge: "张",
     key: "Z",
@@ -54,7 +59,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "赵",
-    fullName: "趙 [赵]",
+    fullName: "赵(趙)",
     pinyin: "zhao",
     charBadge: "赵",
     key: "Z",
@@ -66,7 +71,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "钱",
-    fullName: "錢 [钱]",
+    fullName: "钱(錢)",
     pinyin: "qian",
     charBadge: "钱",
     key: "Q",
@@ -78,7 +83,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "孙",
-    fullName: "孫 [孙]",
+    fullName: "孙(孫)",
     pinyin: "sun",
     charBadge: "孙",
     key: "S",
@@ -90,7 +95,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "李",
-    fullName: "李 [李]",
+    fullName: "李(李)",
     pinyin: "li",
     charBadge: "李",
     key: "L",
@@ -102,7 +107,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "周",
-    fullName: "周 [周]",
+    fullName: "周(周)",
     pinyin: "zhou",
     charBadge: "周",
     key: "Z",
@@ -114,7 +119,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "吴",
-    fullName: "吳 [吴]",
+    fullName: "吴(吳)",
     pinyin: "wu",
     charBadge: "吴",
     key: "W",
@@ -126,7 +131,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "郑",
-    fullName: "鄭 [郑]",
+    fullName: "郑(鄭)",
     pinyin: "zheng",
     charBadge: "郑",
     key: "Z",
@@ -138,7 +143,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "王",
-    fullName: "王 [王]",
+    fullName: "王(王)",
     pinyin: "wang",
     charBadge: "王",
     key: "W",
@@ -150,7 +155,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "冯",
-    fullName: "馮 [冯]",
+    fullName: "冯(馮)",
     pinyin: "feng",
     charBadge: "冯",
     key: "F",
@@ -162,7 +167,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "卫",
-    fullName: "衛 [卫]",
+    fullName: "卫(衛)",
     pinyin: "wei",
     charBadge: "卫",
     key: "W",
@@ -174,7 +179,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "蒋",
-    fullName: "蔣 [蒋]",
+    fullName: "蒋(蔣)",
     pinyin: "jiang",
     charBadge: "蒋",
     key: "J",
@@ -186,7 +191,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "沈",
-    fullName: "沈 [沈]",
+    fullName: "沈(沈)",
     pinyin: "shen",
     charBadge: "沈",
     key: "S",
@@ -198,7 +203,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "韩",
-    fullName: "韓 [韩]",
+    fullName: "韩(韓)",
     pinyin: "han",
     charBadge: "韩",
     key: "H",
@@ -210,7 +215,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "杨",
-    fullName: "楊 [杨]",
+    fullName: "杨(楊)",
     pinyin: "yang",
     charBadge: "杨",
     key: "Y",
@@ -222,7 +227,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "朱",
-    fullName: "朱 [朱]",
+    fullName: "朱(朱)",
     pinyin: "zhu",
     charBadge: "朱",
     key: "Z",
@@ -234,7 +239,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "秦",
-    fullName: "秦 [秦]",
+    fullName: "秦(秦)",
     pinyin: "qin",
     charBadge: "秦",
     key: "Q",
@@ -246,7 +251,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "尤",
-    fullName: "尤 [尤]",
+    fullName: "尤(尤)",
     pinyin: "you",
     charBadge: "尤",
     key: "Y",
@@ -258,7 +263,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "许",
-    fullName: "許 [许]",
+    fullName: "许(許)",
     pinyin: "xu",
     charBadge: "许",
     key: "X",
@@ -270,7 +275,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "何",
-    fullName: "何 [何]",
+    fullName: "何(何)",
     pinyin: "he",
     charBadge: "何",
     key: "H",
@@ -282,7 +287,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "吕",
-    fullName: "呂 [吕]",
+    fullName: "吕(呂)",
     pinyin: "lv",
     charBadge: "吕",
     key: "L",
@@ -294,7 +299,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "施",
-    fullName: "施 [施]",
+    fullName: "施(施)",
     pinyin: "shi",
     charBadge: "施",
     key: "S",
@@ -306,7 +311,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "孔",
-    fullName: "孔 [孔]",
+    fullName: "孔(孔)",
     pinyin: "kong",
     charBadge: "孔",
     key: "K",
@@ -318,7 +323,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "曹",
-    fullName: "曹 [曹]",
+    fullName: "曹(曹)",
     pinyin: "cao",
     charBadge: "曹",
     key: "C",
@@ -330,7 +335,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "严",
-    fullName: "严 [严]",
+    fullName: "严(严)",
     pinyin: "yan",
     charBadge: "严",
     key: "Y",
@@ -342,7 +347,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "华",
-    fullName: "華 [华]",
+    fullName: "华(華)",
     pinyin: "hua",
     charBadge: "华",
     key: "H",
@@ -354,7 +359,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "金",
-    fullName: "金 [金]",
+    fullName: "金(金)",
     pinyin: "jin",
     charBadge: "金",
     key: "J",
@@ -366,7 +371,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "魏",
-    fullName: "魏 [魏]",
+    fullName: "魏(魏)",
     pinyin: "wei",
     charBadge: "魏",
     key: "W",
@@ -378,7 +383,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "陶",
-    fullName: "陶 [陶]",
+    fullName: "陶(陶)",
     pinyin: "tao",
     charBadge: "陶",
     key: "T",
@@ -390,7 +395,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "姜",
-    fullName: "姜 [姜]",
+    fullName: "姜(姜)",
     pinyin: "jiang",
     charBadge: "姜",
     key: "J",
@@ -402,7 +407,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "戚",
-    fullName: "戚 [戚]",
+    fullName: "戚(戚)",
     pinyin: "qi",
     charBadge: "戚",
     key: "Q",
@@ -414,7 +419,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "谢",
-    fullName: "謝 [谢]",
+    fullName: "谢(謝)",
     pinyin: "xie",
     charBadge: "谢",
     key: "X",
@@ -426,7 +431,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "邹",
-    fullName: "鄒 [邹]",
+    fullName: "邹(鄒)",
     pinyin: "zou",
     charBadge: "邹",
     key: "Z",
@@ -438,7 +443,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "喻",
-    fullName: "喻 [喻]",
+    fullName: "喻(喻)",
     pinyin: "yu",
     charBadge: "喻",
     key: "Y",
@@ -450,7 +455,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "柏",
-    fullName: "柏 [柏]",
+    fullName: "柏(柏)",
     pinyin: "bai",
     charBadge: "柏",
     key: "B",
@@ -462,7 +467,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "水",
-    fullName: "水 [水]",
+    fullName: "水(水)",
     pinyin: "shui",
     charBadge: "水",
     key: "S",
@@ -474,7 +479,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "窦",
-    fullName: "竇 [窦]",
+    fullName: "窦(竇)",
     pinyin: "dou",
     charBadge: "窦",
     key: "D",
@@ -486,7 +491,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "章",
-    fullName: "章 [章]",
+    fullName: "章(章)",
     pinyin: "zhang",
     charBadge: "章",
     key: "Z",
@@ -498,7 +503,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "云",
-    fullName: "云 [云]",
+    fullName: "云(云)",
     pinyin: "yun",
     charBadge: "云",
     key: "Y",
@@ -510,7 +515,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "苏",
-    fullName: "苏 [苏]",
+    fullName: "苏(蘇)",
     pinyin: "su",
     charBadge: "苏",
     key: "S",
@@ -522,7 +527,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "潘",
-    fullName: "潘 [潘]",
+    fullName: "潘(潘)",
     pinyin: "pan",
     charBadge: "潘",
     key: "P",
@@ -534,7 +539,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "葛",
-    fullName: "葛 [葛]",
+    fullName: "葛(葛)",
     pinyin: "ge",
     charBadge: "葛",
     key: "G",
@@ -546,7 +551,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "奚",
-    fullName: "奚 [奚]",
+    fullName: "奚(奚)",
     pinyin: "xi",
     charBadge: "奚",
     key: "X",
@@ -558,7 +563,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "范",
-    fullName: "范 [范]",
+    fullName: "范(范)",
     pinyin: "fan",
     charBadge: "范",
     key: "F",
@@ -570,7 +575,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "彭",
-    fullName: "彭 [彭]",
+    fullName: "彭(彭)",
     pinyin: "peng",
     charBadge: "彭",
     key: "P",
@@ -582,7 +587,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "郎",
-    fullName: "郎 [郎]",
+    fullName: "郎(郎)",
     pinyin: "lang",
     charBadge: "郎",
     key: "L",
@@ -594,7 +599,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "鲁",
-    fullName: "鲁 [鲁]",
+    fullName: "鲁(鲁)",
     pinyin: "lu",
     charBadge: "鲁",
     key: "L",
@@ -606,7 +611,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "韦",
-    fullName: "韦 [韦]",
+    fullName: "韦(韋)",
     pinyin: "wei",
     charBadge: "韦",
     key: "W",
@@ -618,7 +623,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "昌",
-    fullName: "昌 [昌]",
+    fullName: "昌(昌)",
     pinyin: "chang",
     charBadge: "昌",
     key: "C",
@@ -630,7 +635,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "马",
-    fullName: "马 [马]",
+    fullName: "马(馬)",
     pinyin: "ma",
     charBadge: "马",
     key: "M",
@@ -642,7 +647,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "苗",
-    fullName: "苗 [苗]",
+    fullName: "苗(苗)",
     pinyin: "miao",
     charBadge: "苗",
     key: "M",
@@ -654,7 +659,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "凤",
-    fullName: "凤 [凤]",
+    fullName: "凤(鳳)",
     pinyin: "feng",
     charBadge: "凤",
     key: "F",
@@ -666,7 +671,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "花",
-    fullName: "花 [花]",
+    fullName: "花(花)",
     pinyin: "hua",
     charBadge: "花",
     key: "H",
@@ -678,7 +683,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "方",
-    fullName: "方 [方]",
+    fullName: "方(方)",
     pinyin: "fang",
     charBadge: "方",
     key: "F",
@@ -690,7 +695,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "俞",
-    fullName: "俞 [俞]",
+    fullName: "俞(俞)",
     pinyin: "yu",
     charBadge: "俞",
     key: "Y",
@@ -702,7 +707,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "任",
-    fullName: "任 [任]",
+    fullName: "任(任)",
     pinyin: "ren",
     charBadge: "任",
     key: "R",
@@ -714,7 +719,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "袁",
-    fullName: "袁 [袁]",
+    fullName: "袁(袁)",
     pinyin: "yuan",
     charBadge: "袁",
     key: "Y",
@@ -726,7 +731,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "柳",
-    fullName: "柳 [柳]",
+    fullName: "柳(柳)",
     pinyin: "liu",
     charBadge: "柳",
     key: "L",
@@ -738,7 +743,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "唐",
-    fullName: "唐 [唐]",
+    fullName: "唐(唐)",
     pinyin: "tang",
     charBadge: "唐",
     key: "T",
@@ -750,7 +755,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "薛",
-    fullName: "薛 [薛]",
+    fullName: "薛(薛)",
     pinyin: "xue",
     charBadge: "薛",
     key: "X",
@@ -762,7 +767,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "雷",
-    fullName: "雷 [雷]",
+    fullName: "雷(雷)",
     pinyin: "lei",
     charBadge: "雷",
     key: "L",
@@ -774,7 +779,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "贺",
-    fullName: "贺 [贺]",
+    fullName: "贺(賀)",
     pinyin: "he",
     charBadge: "贺",
     key: "H",
@@ -786,7 +791,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "罗",
-    fullName: "罗 [罗]",
+    fullName: "罗(羅)",
     pinyin: "luo",
     charBadge: "罗",
     key: "L",
@@ -798,7 +803,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "毕",
-    fullName: "毕 [毕]",
+    fullName: "毕(畢)",
     pinyin: "bi",
     charBadge: "毕",
     key: "B",
@@ -810,7 +815,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "郝",
-    fullName: "郝 [郝]",
+    fullName: "郝(郝)",
     pinyin: "hao",
     charBadge: "郝",
     key: "H",
@@ -822,7 +827,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "邬",
-    fullName: "邬 [邬]",
+    fullName: "邬(鄔)",
     pinyin: "wu",
     charBadge: "邬",
     key: "W",
@@ -834,7 +839,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "顾",
-    fullName: "顾 [顾]",
+    fullName: "顾(顧)",
     pinyin: "gu",
     charBadge: "顾",
     key: "G",
@@ -846,7 +851,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "孟",
-    fullName: "孟 [孟]",
+    fullName: "孟(孟)",
     pinyin: "meng",
     charBadge: "孟",
     key: "M",
@@ -858,7 +863,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "黄",
-    fullName: "黄 [黄]",
+    fullName: "黄(黃)",
     pinyin: "huang",
     charBadge: "黄",
     key: "H",
@@ -870,7 +875,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "萧",
-    fullName: "萧 [萧]",
+    fullName: "萧(蕭)",
     pinyin: "xiao",
     charBadge: "萧",
     key: "X",
@@ -882,7 +887,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "姚",
-    fullName: "姚 [姚]",
+    fullName: "姚(姚)",
     pinyin: "yao",
     charBadge: "姚",
     key: "Y",
@@ -894,7 +899,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "梁",
-    fullName: "梁 [梁]",
+    fullName: "梁(梁)",
     pinyin: "liang",
     charBadge: "梁",
     key: "L",
@@ -906,7 +911,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "杜",
-    fullName: "杜 [杜]",
+    fullName: "杜(杜)",
     pinyin: "du",
     charBadge: "杜",
     key: "D",
@@ -918,7 +923,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "阮",
-    fullName: "阮 [阮]",
+    fullName: "阮(阮)",
     pinyin: "ruan",
     charBadge: "阮",
     key: "R",
@@ -930,7 +935,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "蓝",
-    fullName: "蓝 [蓝]",
+    fullName: "蓝(藍)",
     pinyin: "lan",
     charBadge: "蓝",
     key: "L",
@@ -942,7 +947,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "季",
-    fullName: "季 [季]",
+    fullName: "季(季)",
     pinyin: "ji",
     charBadge: "季",
     key: "J",
@@ -954,7 +959,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "古籍",
-    fullName: "古籍 [古籍/典藏]",
+    fullName: "古籍(典藏)",
     pinyin: "guji",
     charBadge: "博",
     key: "G",
@@ -966,7 +971,7 @@ export const SURNAMES: Surname[] = [
   },
   {
     name: "村志",
-    fullName: "村志 [地方史志]",
+    fullName: "村志(史志)",
     pinyin: "cunzhi",
     charBadge: "志",
     key: "C",
@@ -992,6 +997,11 @@ export const BOOKS: Book[] = [
     library: "义乌市图书馆 地方文献室",
     serialNo: "YW-GEN-C-2003-12",
     abstract: "本谱叙述了龙川陈氏自唐宋以来的繁衍迁徙历史。内容包含：源流考、世系图、家训家规、历代贤达传略以及明清时期的各类敕命复印件。此次2003年重修，在清光绪版基础上进行了大量的勘误与增补，重点收录了近代以来流向海外及各省市的族人分支信息。全书纸张考究，采用手工宣纸印制，具有极高的文献研究与宗族传承价值。",
+    donor: "陈德兴先生捐赠",
+    coverage: "龙川地区陈氏聚居村落",
+    ancestor: "胡公妫满",
+    history: "2004年陈德兴先生捐赠于义乌市图书馆",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=600",
@@ -1011,6 +1021,11 @@ export const BOOKS: Book[] = [
     library: "义乌市档案馆",
     serialNo: "YW-GEN-C-1998-05",
     abstract: "江湾陈氏系出颍川，自元末明初因避战乱迁至义乌江湾村。本谱重新修撰详载了江湾祖基、宗祠、支系分布，记录了清同治年间的祠堂重建及义乌近代著名工匠、乡贤的事迹，是研究浙东乡村社会变迁的珍贵纸质史料。",
+    donor: "陈荣华先生捐赠",
+    coverage: "义乌江湾村陈氏支系",
+    ancestor: "陈君延（元末避乱始祖）",
+    history: "1999年陈荣华先生捐赠于义乌市档案馆",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=600"
@@ -1029,6 +1044,11 @@ export const BOOKS: Book[] = [
     library: "义乌山村文化站",
     serialNo: "YW-GEN-C-1999-06",
     abstract: "颍川郡陈氏多出南宋，明清两代人才辈出，其谱牒保存最为完备，涉及二十余个自然村落。本谱全面记载了颍川郡大宗世系，重点厘清了明代嘉靖年间分派迁徙的流派走向，录有先人画像十二幅，流传有序。",
+    donor: "陈万松先生捐赠",
+    coverage: "颍川郡陈氏二十余村落",
+    ancestor: "陈寔（太丘长）",
+    history: "2000年陈万松先生捐赠于义乌山村文化站",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=600"
@@ -1047,6 +1067,11 @@ export const BOOKS: Book[] = [
     library: "东阳市博物馆",
     serialNo: "DY-GEN-C-2008-10",
     abstract: "本谱详实梳理了号称‘江南第一家’的东阳义门陈氏之分迁历史。全卷以严苛的家规家训著称，收录了著名的《义门陈氏家规百余条》，对现代家族管理与良好家风建设有深远的借鉴 and 教育意义。",
+    donor: "陈自立先生捐赠",
+    coverage: "东阳义门陈氏分迁支系",
+    ancestor: "陈叔宝（义门始祖）",
+    history: "2009年陈自立先生捐赠于东阳市博物馆",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=600"
@@ -1065,6 +1090,11 @@ export const BOOKS: Book[] = [
     library: "义乌市图书馆",
     serialNo: "YW-GEN-Z-1999-08",
     abstract: "清河百忍，厚德载物。苏溪张氏自明代中叶入塞入迁，开枝散叶。本谱详尽记载了苏溪张氏自一世祖以来的全部分支世系，重点收录了清代中后期张氏巨商行商沪上的事迹与契约文书，具有极高的地方志价值。",
+    donor: "张敬轩先生捐赠",
+    coverage: "义乌苏溪张氏支系",
+    ancestor: "张挥（弓箭发明者）",
+    history: "2000年张敬轩先生捐赠于义乌市图书馆",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=600"
     ]
@@ -1082,6 +1112,11 @@ export const BOOKS: Book[] = [
     library: "张氏宗祠",
     serialNo: "YW-GEN-Z-2005-14",
     abstract: "本谱遵循‘忠孝传家’之宗旨，收录了数百年来的先贤功德录、精美的廿三里张氏祠堂图解、考究之祭祀礼仪。此次重修特别补录了辛亥革命以来流寓海外及各省市的同胞之详细族籍，脉络分明。",
+    donor: "张培林先生捐赠",
+    coverage: "义乌廿三里张氏忠孝堂",
+    ancestor: "张公艺（百忍堂始祖）",
+    history: "2006年张培林先生捐赠于张氏宗祠",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=600"
     ]
@@ -1099,6 +1134,11 @@ export const BOOKS: Book[] = [
     library: "常熟图书馆分馆",
     serialNo: "CS-GEN-Z-2001-14",
     abstract: "琴川赵氏多为宋室南渡后之遗臣、皇戚后裔。本谱不仅高等级载列宋皇室大宗系，更保存了大量明清两代江南文人的序言、题词、祭文及宋廷遗墨之画影复刻，具有绝佳之文史和书法研究价值。",
+    donor: "赵国祥先生捐赠",
+    coverage: "常熟琴川赵氏支系",
+    ancestor: "赵匡义（宋太宗）",
+    history: "2002年赵国祥先生捐赠于常熟图书馆",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=600"
     ]
@@ -1116,6 +1156,11 @@ export const BOOKS: Book[] = [
     library: "义乌档案馆",
     serialNo: "YW-GEN-Z-2010-10",
     abstract: "义乌赵宅赵氏族人世代聚居，贤良辈出。本谱完好保存了康熙、乾嘉及光绪历次大修的书序凡例。全谱通过详尽的迁徙地图，生动再现了赵氏族人在东南沿海的发展轨迹及忠义之家风流传。",
+    donor: "赵建国先生捐赠",
+    coverage: "义乌赵宅赵氏聚居地",
+    ancestor: "赵造父（周穆王御者）",
+    history: "2011年赵建国先生捐赠于义乌档案馆",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=600"
     ]
@@ -1133,6 +1178,11 @@ export const BOOKS: Book[] = [
     library: "古籍珍藏阁",
     serialNo: "GJ-XHBG-001",
     abstract: "《宣和博古图》三十卷，由宋代王黼、徽宗朝群臣奉敕纂修。该书著录了宋代皇室所藏商代至唐代的精美青铜器数千件。全书图形逼真，注解极其详尽，是研究古代礼乐器制度、文字、金石学以及宋代仿照高古工艺的大型绝美参考书。",
+    donor: "私家珍藏捐赠",
+    coverage: "宋代皇室青铜器图谱",
+    ancestor: "—",
+    history: "1952年由私家珍藏捐赠至古籍珍藏阁",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=600"
     ]
@@ -1150,6 +1200,11 @@ export const BOOKS: Book[] = [
     library: "省图书馆特藏部",
     serialNo: "GJ-TSJC-108",
     abstract: "《古今图书集成》为我国现存规模最大、体例最完善、被誉为‘康熙百科全书’的巨大典籍类书。该馆藏珍藏了该巨著关于‘家谱世系考’及‘氏族迁徙考’相关的核心三十二册精校卷，系统编纂了中古至近古百家大姓源流。",
+    donor: "清宫旧藏移交",
+    coverage: "百科类书·家谱世系考",
+    ancestor: "—",
+    history: "1949年清宫旧藏移交至省图书馆特藏部",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=600"
     ]
@@ -1167,6 +1222,11 @@ export const BOOKS: Book[] = [
     library: "岩头村文史馆",
     serialNo: "CZ-YT-2012-08",
     abstract: "岩头村为浙东千年文化古村，本志书系统记录了岩头村自唐宋建村以来的地理风貌、乡绅名流、特色农桑工艺以及历代宗族的分迁生息，是极具研究价值的微观乡土历史。",
+    donor: "陈山泉先生捐赠",
+    coverage: "岩头村千年历史文化",
+    ancestor: "陈太公（北宋建村始祖）",
+    history: "2013年陈山泉先生捐赠于岩头村文史馆",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=600"
     ]
@@ -1184,6 +1244,11 @@ export const BOOKS: Book[] = [
     library: "地方文史书斋",
     serialNo: "CZ-HS-2015-08",
     abstract: "环山村地处群山怀抱，本志详尽考证了该村特色徽派建筑群之由来、百年私塾文脉之传承、及近代辛亥前后进步志士的事迹。图文并茂，具有强烈的地方特色。",
+    donor: "张环林先生捐赠",
+    coverage: "环山徽派建筑与文脉",
+    ancestor: "张元公（明代迁环山始祖）",
+    history: "2016年张环林先生捐赠于地方文史书斋",
+    badge: "",
     pages: [
       "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=600"
     ]

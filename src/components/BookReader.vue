@@ -140,6 +140,7 @@ const startAutoplay = () => {
   isPlaying.value = true;
   playTimer = setInterval(() => {
     if (activeSheet.value < totalSheets) {
+      playPageTurnSound('next');
       activeSheet.value++;
     } else {
       activeSheet.value = 0; // Wrap around
@@ -201,21 +202,46 @@ onUnmounted(() => {
   stopAutoplay();
 });
 
+// === Page Turn Sound Effect ===
+let pageTurnAudio: HTMLAudioElement | null = null;
+
+const initPageTurnAudio = () => {
+  if (!pageTurnAudio) {
+    pageTurnAudio = new Audio('/sounds/page-turn.wav');
+    pageTurnAudio.preload = 'auto';
+    pageTurnAudio.volume = 0.6;
+  }
+};
+
+const playPageTurnSound = (direction: 'next' | 'prev' = 'next') => {
+  initPageTurnAudio();
+  if (!pageTurnAudio) return;
+  // Normalize playback for direction variation (slight pitch/speed change)
+  pageTurnAudio.playbackRate = direction === 'next' ? 1.0 : 0.92;
+  pageTurnAudio.currentTime = 0;
+  pageTurnAudio.play().catch(() => {});
+};
+
 // Flip page handlers
 const turnNext = () => {
   if (activeSheet.value < totalSheets) {
+    playPageTurnSound('next');
     activeSheet.value++;
   }
 };
 
 const turnPrev = () => {
   if (activeSheet.value > 0) {
+    playPageTurnSound('prev');
     activeSheet.value--;
   }
 };
 
 // Reset book state
 const resetBook = () => {
+  if (activeSheet.value > 0) {
+    playPageTurnSound('prev');
+  }
   activeSheet.value = 0;
 };
 
@@ -504,14 +530,6 @@ const thumbnailsList = computed(() => {
       <div class="flex flex-wrap items-center justify-between gap-3 w-full pb-3 border-b border-[#EAE3D2]">
         <div class="flex items-center gap-2">
           <el-button 
-            @click="turnPrev" 
-            :disabled="activeSheet === 0"
-            class="!bg-[#FFFDF9] !border-[#DECFBD] hover:!bg-[#F7F2E7] !text-[#5C5045] !font-bold !px-4 shadow-xs transition flex items-center gap-1"
-          >
-            <span>←</span> 上一页
-          </el-button>
-
-          <el-button 
             v-if="activeSheet > 0"
             @click="resetBook"
             class="!bg-[#FAF4E9] !border-[#DECFBD] hover:!bg-[#F2ECE1] !text-[#8B3E1F] !font-semibold !px-3 shadow-xs transition"
@@ -554,6 +572,14 @@ const thumbnailsList = computed(() => {
           </div>
 
           <el-button 
+            @click="turnPrev" 
+            :disabled="activeSheet === 0"
+            class="!bg-[#FFFDF9] !border-[#DECFBD] hover:!bg-[#F7F2E7] !text-[#5C5045] !font-bold !px-4 shadow-xs transition flex items-center gap-1"
+          >
+            <span>←</span> 上一页
+          </el-button>
+
+          <el-button 
             @click="turnNext" 
             :disabled="activeSheet === totalSheets"
             class="!bg-[#8B3E1F] !border-[#8B3E1F] hover:!bg-[#732F15] !text-white !font-bold !px-4 shadow-xs transition flex items-center gap-1"
@@ -566,22 +592,6 @@ const thumbnailsList = computed(() => {
       <!-- Row 2: User-requested interactive modules (Thumbnails, Volumes, TOC, Autoplay, Fullscreen) -->
       <div class="flex flex-wrap items-center justify-between gap-2.5 w-full pt-1.5">
         <div class="flex flex-wrap items-center gap-2">
-          <!-- Table of Contents Toggle -->
-          <button 
-            @click="toggleToc"
-            :class="[
-              'px-3 py-1.5 rounded-lg border text-xs font-semibold font-serif flex items-center gap-1.5 transition shadow-xs',
-              showToc 
-                ? 'bg-[#8B3E1F] text-[#FFFDF4] border-[#8B3E1F]' 
-                : 'border border-[#8B3E1F]/20 bg-[#FFFDF9] text-[#7A3F26] hover:bg-[#FDF9F0]'
-            ]"
-          >
-            <svg class="w-3.5 h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            <span>{{ showToc ? '收起目录' : '打开目录' }}</span>
-          </button>
-
           <!-- Volumes Selector Toggle -->
           <button 
             @click="toggleVolumes"
@@ -597,6 +607,22 @@ const thumbnailsList = computed(() => {
               <path d="M9 4v16M14 4v16" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
             <span>{{ showVolumes ? '收起册次' : '选择册次' }}</span>
+          </button>
+
+          <!-- Table of Contents Toggle -->
+          <button 
+            @click="toggleToc"
+            :class="[
+              'px-3 py-1.5 rounded-lg border text-xs font-semibold font-serif flex items-center gap-1.5 transition shadow-xs',
+              showToc 
+                ? 'bg-[#8B3E1F] text-[#FFFDF4] border-[#8B3E1F]' 
+                : 'border border-[#8B3E1F]/20 bg-[#FFFDF9] text-[#7A3F26] hover:bg-[#FDF9F0]'
+            ]"
+          >
+            <svg class="w-3.5 h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span>{{ showToc ? '收起目录' : '打开目录' }}</span>
           </button>
 
           <!-- Thumbnails Drawer Toggle -->
@@ -660,9 +686,64 @@ const thumbnailsList = computed(() => {
     <!-- Core Interactive Area Grid Layout -->
     <div class="flex flex-col lg:flex-row items-stretch justify-center w-full gap-4 max-w-[1240px] relative z-10">
       
-      <!-- ==================== INDEPENDENT SIDEBAR PANELS: TOC & Volumes ==================== -->
+      <!-- ==================== INDEPENDENT SIDEBAR PANELS: Volumes & TOC ==================== -->
 
-      <!-- Panel 1: Table of Contents (目录) -->
+      <!-- Panel 1: Volumes (册次) -->
+      <div 
+        v-if="showVolumes" 
+        class="w-full lg:w-[260px] bg-[#FAF4E8] border border-[#8B3E1F]/20 rounded-xl p-4 flex flex-col shrink-0 shadow-md transition-all animate-fade-in relative"
+      >
+        <!-- Corner Decorative Accents -->
+        <div class="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-[#8B3E1F]/35 pointer-events-none" />
+        <div class="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-[#8B3E1F]/35 pointer-events-none" />
+        <div class="absolute bottom-1 left-1 w-1.5 h-1.5 border-b border-l border-[#8B3E1F]/35 pointer-events-none" />
+        <div class="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-[#8B3E1F]/35 pointer-events-none" />
+
+        <div class="font-serif text-sm font-bold text-[#8B3E1F] border-b border-[#EBE2D0]/60 pb-2 mb-4 tracking-wider text-center">
+          卷帙选册
+        </div>
+
+        <!-- VOLUME LIST -->
+        <div class="flex flex-col flex-1 gap-2.5 overflow-y-auto max-h-[calc(100vh-220px)] pr-1 toc-scroll">
+          <div class="flex flex-col gap-2 rounded-lg">
+            <div 
+              v-for="vol in volumesList"
+              :key="vol.no"
+              @click="selectVolume(vol.no)"
+              :class="[
+                'cursor-pointer p-2 rounded-lg border transition-all duration-300 flex flex-col relative overflow-hidden',
+                currentVolume === vol.no
+                  ? 'bg-[#8B3E1F] text-white border border-[#8B3E1F] shadow-sm'
+                  : 'bg-[#FFFDF9]/90 border border-[#DECFBD]/85 text-[#5C5045] hover:bg-[#F2ECE0]'
+              ]"
+            >
+              <!-- Sealed visual indicator -->
+              <div 
+                v-if="currentVolume === vol.no" 
+                class="absolute -right-2 -bottom-2 bg-[#FFFDF4]/10 text-white rounded-full p-3 font-serif text-[18px] tracking-tighter opacity-15 rotate-12 font-extrabold"
+              >
+                藏
+              </div>
+
+              <span class="text-xs font-serif font-extrabold flex items-center gap-1">
+                <span class="text-[9.5px] opacity-75">#{{"一二三四"[vol.no - 1]}}册</span>
+                <span>{{ vol.title.split(' (')[0] }}</span>
+              </span>
+              <p 
+                :class="[
+                  'text-[9.5px] mt-1 font-sans leading-relaxed',
+                  currentVolume === vol.no ? 'text-amber-100/90' : 'text-stone-500'
+                ]"
+              >
+                {{ vol.desc }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panel 2: Table of Contents (目录) -->
       <div 
         v-if="showToc" 
         class="w-full lg:w-[260px] bg-[#FAF4E8] border border-[#8B3E1F]/20 rounded-xl p-4 flex flex-col shrink-0 shadow-md transition-all animate-fade-in relative"
@@ -722,61 +803,6 @@ const thumbnailsList = computed(() => {
               <span v-if="activeSheet === node.sheet" class="text-[8px] text-[#8B3E1F]">●</span>
             </div>
           </template>
-        </div>
-
-      </div>
-
-      <!-- Panel 2: Volumes (册次) -->
-      <div 
-        v-if="showVolumes" 
-        class="w-full lg:w-[260px] bg-[#FAF4E8] border border-[#8B3E1F]/20 rounded-xl p-4 flex flex-col shrink-0 shadow-md transition-all animate-fade-in relative"
-      >
-        <!-- Corner Decorative Accents -->
-        <div class="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-[#8B3E1F]/35 pointer-events-none" />
-        <div class="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-[#8B3E1F]/35 pointer-events-none" />
-        <div class="absolute bottom-1 left-1 w-1.5 h-1.5 border-b border-l border-[#8B3E1F]/35 pointer-events-none" />
-        <div class="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-[#8B3E1F]/35 pointer-events-none" />
-
-        <div class="font-serif text-sm font-bold text-[#8B3E1F] border-b border-[#EBE2D0]/60 pb-2 mb-4 tracking-wider text-center">
-          卷帙选册
-        </div>
-
-        <!-- VOLUME LIST -->
-        <div class="flex flex-col flex-1 gap-2.5 overflow-y-auto max-h-[calc(100vh-220px)] pr-1 toc-scroll">
-          <div class="flex flex-col gap-2 rounded-lg">
-            <div 
-              v-for="vol in volumesList"
-              :key="vol.no"
-              @click="selectVolume(vol.no)"
-              :class="[
-                'cursor-pointer p-2 rounded-lg border transition-all duration-300 flex flex-col relative overflow-hidden',
-                currentVolume === vol.no
-                  ? 'bg-[#8B3E1F] text-white border border-[#8B3E1F] shadow-sm'
-                  : 'bg-[#FFFDF9]/90 border border-[#DECFBD]/85 text-[#5C5045] hover:bg-[#F2ECE0]'
-              ]"
-            >
-              <!-- Sealed visual indicator -->
-              <div 
-                v-if="currentVolume === vol.no" 
-                class="absolute -right-2 -bottom-2 bg-[#FFFDF4]/10 text-white rounded-full p-3 font-serif text-[18px] tracking-tighter opacity-15 rotate-12 font-extrabold"
-              >
-                藏
-              </div>
-
-              <span class="text-xs font-serif font-extrabold flex items-center gap-1">
-                <span class="text-[9.5px] opacity-75">#{{"一二三四"[vol.no - 1]}}册</span>
-                <span>{{ vol.title.split(' (')[0] }}</span>
-              </span>
-              <p 
-                :class="[
-                  'text-[9.5px] mt-1 font-sans leading-relaxed',
-                  currentVolume === vol.no ? 'text-amber-100/90' : 'text-stone-500'
-                ]"
-              >
-                {{ vol.desc }}
-              </p>
-            </div>
-          </div>
         </div>
 
       </div>
